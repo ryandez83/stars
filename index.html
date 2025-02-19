@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number the Stars Quiz - Chapters 4, 5, 6</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f3ff; /* Light blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #ff4500; /* Orange title */
+            font-size: 36px;
+        }
+
+        h2 {
+            color: #4682b4; /* Steel blue subtitle */
+            font-size: 24px;
+        }
+
+        #score {
+            font-size: 20px;
+            color: #2e8b57; /* Sea green */
+            margin: 10px 0;
+        }
+
+        #question {
+            font-size: 22px;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        #options {
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #4682b4; /* Steel blue buttons */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4169e1; /* Royal blue on hover */
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Number the Stars Quiz</h1>
+        <h2>Chapters 4, 5, and 6</h2>
+        <div id="score">Score: 0</div>
+        <div id="question"></div>
+        <div id="options"></div>
+        <button id="next" style="display:none;">Next Question</button>
+        <div id="feedback"></div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Why were Annemarie and Kirsti stopped by the German soldiers in Chapter 4?",
+                options: ["They were running too fast", "They were out after curfew", "They were carrying contraband", "They were lost"],
+                answer: "They were running too fast"
+            },
+            {
+                question: "How did Kirsti react to the soldiers in Chapter 4?",
+                options: ["She cried", "She was polite", "She talked back", "She ran away"],
+                answer: "She talked back"
+            },
+            {
+                question: "Why did Ellen’s parents have to leave suddenly?",
+                options: ["They were on vacation", "They were in danger from the Nazis", "They had work", "They were sick"],
+                answer: "They were in danger from the Nazis"
+            },
+            {
+                question: "How was Ellen introduced to the soldiers in Chapter 5?",
+                options: ["As Annemarie’s cousin", "As a neighbor", "As Annemarie’s sister", "As a friend"],
+                answer: "As Annemarie’s sister"
+            },
+            {
+                question: "What feature of Ellen’s did the soldiers question?",
+                options: ["Her height", "Her dark hair", "Her accent", "Her clothes"],
+                answer: "Her dark hair"
+            },
+            {
+                question: "How did Annemarie’s father convince the soldiers Ellen was family?",
+                options: ["He showed her birth certificate", "He showed baby pictures", "He called her parents", "He bribed them"],
+                answer: "He showed baby pictures"
+            },
+            {
+                question: "Where did the family go in Chapter 6?",
+                options: ["To Sweden", "To Uncle Henrik’s house", "To school", "To Copenhagen"],
+                answer: "To Uncle Henrik’s house"
+            },
+            {
+                question: "How did they travel to Uncle Henrik’s house?",
+                options: ["By car", "By boat", "By train", "By walking"],
+                answer: "By train"
+            },
+            {
+                question: "What did Annemarie do with Ellen’s necklace in Chapter 5?",
+                options: ["Threw it away", "Hid it in her hand", "Gave it to her mom", "Buried it"],
+                answer: "Hid it in her hand"
+            },
+            {
+                question: "What code phrase did Mr. Johansen use with Uncle Henrik?",
+                options: ["Is it sunny today?", "Is the weather good for fishing?", "Are you home?", "Is the sea calm?"],
+                answer: "Is the weather good for fishing?"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+            const feedbackElement = document.getElementById("feedback");
+            const nextButton = document.getElementById("next");
+
+            questionElement.textContent = `Question ${currentQuestion + 1}: ${quizData[currentQuestion].question}`;
+            optionsElement.innerHTML = ""; // Clear previous options
+            feedbackElement.textContent = "";
+            nextButton.style.display = "none";
+
+            quizData[currentQuestion].options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsElement.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selected) {
+            const feedbackElement = document.getElementById("feedback");
+            const nextButton = document.getElementById("next");
+            const correctAnswer = quizData[currentQuestion].answer;
+
+            if (selected === correctAnswer) {
+                feedbackElement.textContent = "Correct! Great job! 🌟";
+                feedbackElement.style.color = "#2e8b57"; // Sea green
+                score++;
+                document.getElementById("score").textContent = `Score: ${score}`;
+            } else {
+                feedbackElement.textContent = `Oops! The correct answer is "${correctAnswer}".`;
+                feedbackElement.style.color = "#ff4500"; // Orange
+            }
+
+            // Disable option buttons after selection
+            const buttons = document.querySelectorAll("#options button");
+            buttons.forEach(button => button.disabled = true);
+
+            // Show next button
+            nextButton.style.display = "block";
+            nextButton.onclick = () => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion();
+                } else {
+                    endQuiz();
+                }
+            };
+        }
+
+        function endQuiz() {
+            const quizContainer = document.querySelector(".quiz-container");
+            quizContainer.innerHTML = `
+                <h1>Quiz Complete!</h1>
+                <p>Your final score: ${score} out of ${quizData.length}</p>
+                <p>${score >= 8 ? "Amazing work! You’re a star! ⭐" : "Good try! Want to play again?"}</p>
+            `;
+        }
+
+        // Start the quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
